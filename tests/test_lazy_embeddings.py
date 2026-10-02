@@ -33,9 +33,7 @@ def _fake_model_returning(dim: int):
     stay compatible with the real FastEmbed signature.
     """
     fake = MagicMock()
-    fake.embed.side_effect = lambda texts, batch_size=256: iter(
-        [np.zeros(dim, dtype=np.float32) for _ in texts]
-    )
+    fake.embed.side_effect = lambda texts, batch_size=256: iter([np.zeros(dim, dtype=np.float32) for _ in texts])
     return fake
 
 
@@ -202,9 +200,7 @@ def test_embed_count_mismatch_raises():
     from mcp_server.server import EmbeddingError
 
     fake = MagicMock()
-    fake.embed.side_effect = lambda texts, batch_size=256: iter(
-        [np.zeros(384, dtype=np.float32)]
-    )  # always 1
+    fake.embed.side_effect = lambda texts, batch_size=256: iter([np.zeros(384, dtype=np.float32)])  # always 1
     with patch("mcp_server.server.TextEmbedding", return_value=fake):
         emb = _make_embedder()
         with pytest.raises(EmbeddingError, match="count mismatch"):
